@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold text-gray-900 mb-6">Your Cart</h1>
+
+{% if cart|length %}
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-left">
+        <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+            <tr>
+                <th class="px-4 py-3">Product</th>
+                <th class="px-4 py-3">Price</th>
+                <th class="px-4 py-3">Qty</th>
+                <th class="px-4 py-3">Total</th>
+                <th class="px-4 py-3"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% for item in cart %}
+            <tr>
+                <td class="px-4 py-3">
+                    <a href="{{ item.product.get_absolute_url }}" class="font-medium text-gray-900 hover:text-indigo-600">{{ item.product.name }}</a>
+                </td>
+                <td class="px-4 py-3 text-gray-600">${{ item.price }}</td>
+                <td class="px-4 py-3">
+                    <form action="{% url 'cart:cart_update' item.product.id %}" method="post" class="flex items-center gap-2">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="{{ item.product.stock }}"
+                               class="w-16 rounded-lg border border-gray-300 px-2 py-1 text-center">
+                        <button type="submit" class="text-xs text-indigo-600 hover:underline">Update</button>
+                    </form>
+                </td>
+                <td class="px-4 py-3 font-semibold">${{ item.line_total }}</td>
+                <td class="px-4 py-3">
+                    <form action="{% url 'cart:cart_remove' item.product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="text-sm text-red-500 hover:underline">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <a href="{% url 'store:product_list' %}" class="text-indigo-600 hover:underline">&larr; Continue shopping</a>
+    <div class="flex items-center gap-6">
+        <span class="text-lg">Total: <strong>${{ cart.get_total_price }}</strong></span>
+        <a href="{% url 'orders:checkout' %}" class="rounded-lg bg-indigo-600 px-6 py-2 text-white font-medium hover:bg-indigo-700">
+            Checkout
+        </a>
+    </div>
+</div>
+{% else %}
+<div class="bg-white rounded-xl shadow-sm p-12 text-center">
+    <p class="text-lg text-gray-600">Your cart is empty.</p>
+    <a href="{% url 'store:product_list' %}" class="mt-4 inline-block rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-700">Start shopping</a>
+</div>
+{% endif %}
+{% endblock %}

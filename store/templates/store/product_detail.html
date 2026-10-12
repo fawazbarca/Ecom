@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'store:product_list' %}" class="text-sm text-indigo-600 hover:underline">&larr; Back to shop</a>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+    <div>
+        <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-full w-full object-cover">
+            {% else %}
+            <div class="h-full w-full flex items-center justify-center text-gray-300 text-7xl">&#128230;</div>
+            {% endif %}
+        </div>
+        {% if product.images.all %}
+        <div class="grid grid-cols-4 gap-3 mt-3">
+            {% for img in product.images.all %}
+            <img src="{{ img.image.url }}" alt="{{ img.alt_text|default:product.name }}" class="aspect-square object-cover rounded-lg border">
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div>
+        {% if product.category %}
+        <span class="text-xs uppercase tracking-wide text-indigo-500">{{ product.category.name }}</span>
+        {% endif %}
+        <h1 class="text-3xl font-bold text-gray-900 mt-1">{{ product.name }}</h1>
+        <p class="text-2xl font-bold text-indigo-600 mt-3">${{ product.price }}</p>
+
+        <p class="mt-4 text-gray-600 leading-relaxed">{{ product.description|default:"No description provided." }}</p>
+
+        <div class="mt-6">
+            {% if product.in_stock %}
+            <p class="text-sm text-green-600 mb-3">{{ product.stock }} in stock</p>
+            <form action="{% url 'cart:cart_add' product.id %}" method="post" class="flex items-center gap-3">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}"
+                       class="w-20 rounded-lg border border-gray-300 px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <button type="submit" class="rounded-lg bg-indigo-600 px-6 py-2 text-white font-medium hover:bg-indigo-700">
+                    Add to cart
+                </button>
+            </form>
+            {% else %}
+            <p class="inline-block rounded-lg bg-gray-200 px-6 py-2 text-gray-500 font-medium">Out of stock</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if related %}
+<section class="mt-14">
+    <h2 class="text-xl font-bold text-gray-900 mb-4">You may also like</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for item in related %}
+        <a href="{{ item.get_absolute_url }}" class="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
+            <div class="aspect-square bg-gray-100 overflow-hidden">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.name }}" class="h-full w-full object-cover group-hover:scale-105 transition">
+                {% else %}
+                <div class="h-full w-full flex items-center justify-center text-gray-300 text-5xl">&#128230;</div>
+                {% endif %}
+            </div>
+            <div class="p-3">
+                <h3 class="font-medium text-gray-900 truncate">{{ item.name }}</h3>
+                <span class="text-indigo-600 font-semibold">${{ item.price }}</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Shop{% endblock %}
+
+{% block content %}
+<div class="flex flex-wrap items-center gap-2 mb-6">
+    <a href="{% url 'store:product_list' %}"
+       class="px-3 py-1 rounded-full text-sm {% if not current_category %}bg-indigo-600 text-white{% else %}bg-white border border-gray-300 hover:bg-gray-100{% endif %}">All</a>
+    {% for category in categories %}
+    <a href="?category={{ category.slug }}"
+       class="px-3 py-1 rounded-full text-sm {% if current_category == category %}bg-indigo-600 text-white{% else %}bg-white border border-gray-300 hover:bg-gray-100{% endif %}">{{ category.name }}</a>
+    {% endfor %}
+</div>
+
+{% if query %}
+<p class="text-sm text-gray-500 mb-4">Results for &ldquo;{{ query }}&rdquo;</p>
+{% endif %}
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for product in products %}
+    <a href="{{ product.get_absolute_url }}" class="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
+        <div class="aspect-square bg-gray-100 overflow-hidden">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-full w-full object-cover group-hover:scale-105 transition">
+            {% else %}
+            <div class="h-full w-full flex items-center justify-center text-gray-300 text-5xl">&#128230;</div>
+            {% endif %}
+        </div>
+        <div class="p-4">
+            {% if product.category %}
+            <span class="text-xs uppercase tracking-wide text-indigo-500">{{ product.category.name }}</span>
+            {% endif %}
+            <h2 class="font-semibold text-gray-900 truncate">{{ product.name }}</h2>
+            <div class="mt-1 flex items-center justify-between">
+                <span class="text-lg font-bold text-gray-900">${{ product.price }}</span>
+                {% if product.in_stock %}
+                <span class="text-xs text-green-600">In stock</span>
+                {% else %}
+                <span class="text-xs text-red-500">Sold out</span>
+                {% endif %}
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <div class="col-span-full text-center py-16 text-gray-500">
+        <p class="text-lg">No products found.</p>
+        <p class="text-sm mt-1">Run <code class="bg-gray-100 px-1 rounded">python manage.py seed_store</code> to add sample data.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

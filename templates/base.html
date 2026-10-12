@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Shop{% endblock %} | Ecom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-800">
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <nav class="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
+            <a href="{% url 'store:product_list' %}" class="text-2xl font-bold text-indigo-600">Ecom</a>
+            <form action="{% url 'store:product_list' %}" method="get" class="hidden sm:block flex-1 mx-8">
+                <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search products..."
+                       class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </form>
+            <a href="{% url 'cart:cart_detail' %}" class="relative inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
+                Cart
+                {% if cart|length %}
+                <span class="ml-2 inline-flex items-center justify-center rounded-full bg-white text-indigo-600 text-xs font-bold h-5 w-5">{{ cart|length }}</span>
+                {% endif %}
+            </a>
+        </nav>
+    </header>
+
+    {% if messages %}
+    <div class="max-w-6xl mx-auto w-full px-4 mt-4 space-y-2">
+        {% for message in messages %}
+        <div class="rounded-lg px-4 py-3 text-sm {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white border-t mt-8">
+        <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-500">
+            &copy; {% now "Y" %} Ecom. Demo store &mdash; payments are simulated.
+        </div>
+    </footer>
+</body>
+</html>

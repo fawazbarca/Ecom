@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold text-gray-900 mb-6">Checkout</h1>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+        <form method="post" class="bg-white rounded-xl shadow-sm p-6 space-y-4">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {% for field in form %}
+                <div class="{% if field.name == 'address' %}sm:col-span-2{% endif %}">
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <p class="text-sm text-red-500 mt-1">{{ field.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="w-full rounded-lg bg-indigo-600 px-6 py-3 text-white font-semibold hover:bg-indigo-700">
+                Place order (simulated payment)
+            </button>
+            <p class="text-xs text-center text-gray-400">No real payment is processed in this demo.</p>
+        </form>
+    </div>
+
+    <aside class="bg-white rounded-xl shadow-sm p-6 h-fit">
+        <h2 class="font-semibold text-gray-900 mb-4">Order summary</h2>
+        <ul class="divide-y divide-gray-100 text-sm">
+            {% for item in cart %}
+            <li class="py-2 flex justify-between">
+                <span class="text-gray-600">{{ item.quantity }} &times; {{ item.product.name }}</span>
+                <span>${{ item.line_total }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="border-t mt-3 pt-3 flex justify-between font-bold">
+            <span>Total</span>
+            <span>${{ cart.get_total_price }}</span>
+        </div>
+    </aside>
+</div>
+{% endblock %}
