@@ -19,23 +19,13 @@
             {% for item in order.items.all %}
             <li class="py-2 flex justify-between">
                 <span class="text-gray-600">{{ item.quantity }} &times; {{ item.product_name }}</span>
-                <span>{{ site_settings.currency_symbol }}{{ item.line_total }}</span>
+                <span>${{ item.line_total }}</span>
             </li>
             {% endfor %}
         </ul>
-        <div class="border-t mt-3 pt-3 text-sm space-y-1">
-            <div class="flex justify-between text-gray-600">
-                <span>Subtotal</span>
-                <span>{{ site_settings.currency_symbol }}{{ order.subtotal }}</span>
-            </div>
-            <div class="flex justify-between text-gray-600">
-                <span>Shipping</span>
-                <span>{% if order.shipping_fee %}{{ site_settings.currency_symbol }}{{ order.shipping_fee }}{% else %}Free{% endif %}</span>
-            </div>
-            <div class="flex justify-between font-bold text-base pt-1">
-                <span>Total</span>
-                <span>{{ site_settings.currency_symbol }}{{ order.total }}</span>
-            </div>
+        <div class="border-t mt-3 pt-3 flex justify-between font-bold">
+            <span>Total</span>
+            <span>${{ order.total }}</span>
         </div>
     </div>
 

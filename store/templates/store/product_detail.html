@@ -28,37 +28,24 @@
         <span class="text-xs uppercase tracking-wide text-indigo-500">{{ product.category.name }}</span>
         {% endif %}
         <h1 class="text-3xl font-bold text-gray-900 mt-1">{{ product.name }}</h1>
-        <p class="text-2xl font-bold text-indigo-600 mt-3">{{ site_settings.currency_symbol }}{{ product.price }}</p>
+        <p class="text-2xl font-bold text-indigo-600 mt-3">${{ product.price }}</p>
 
         <p class="mt-4 text-gray-600 leading-relaxed">{{ product.description|default:"No description provided." }}</p>
 
         <div class="mt-6">
             {% if product.in_stock %}
             <p class="text-sm text-green-600 mb-3">{{ product.stock }} in stock</p>
+            <form action="{% url 'cart:cart_add' product.id %}" method="post" class="flex items-center gap-3">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}"
+                       class="w-20 rounded-lg border border-gray-300 px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <button type="submit" class="rounded-lg bg-indigo-600 px-6 py-2 text-white font-medium hover:bg-indigo-700">
+                    Add to cart
+                </button>
+            </form>
             {% else %}
-            <p class="text-sm text-red-500 mb-3">Out of stock</p>
+            <p class="inline-block rounded-lg bg-gray-200 px-6 py-2 text-gray-500 font-medium">Out of stock</p>
             {% endif %}
-            <div class="flex flex-wrap items-center gap-3">
-                {% if product.in_stock %}
-                <form action="{% url 'cart:cart_add' product.id %}" method="post" class="flex items-center gap-3">
-                    {% csrf_token %}
-                    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}"
-                           class="w-20 rounded-lg border border-gray-300 px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <button type="submit" class="rounded-lg bg-indigo-600 px-6 py-2 text-white font-medium hover:bg-indigo-700">
-                        Add to cart
-                    </button>
-                </form>
-                {% else %}
-                <span class="inline-block rounded-lg bg-gray-200 px-6 py-2 text-gray-500 font-medium">Out of stock</span>
-                {% endif %}
-                <form action="{% url 'wishlist:wishlist_toggle' product.id %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                    <button type="submit" class="rounded-lg border border-gray-300 px-5 py-2 font-medium text-gray-700 hover:bg-gray-100">
-                        {% if product in wishlist %}♥ In wishlist{% else %}♡ Add to wishlist{% endif %}
-                    </button>
-                </form>
-            </div>
         </div>
     </div>
 </div>
@@ -78,7 +65,7 @@
             </div>
             <div class="p-3">
                 <h3 class="font-medium text-gray-900 truncate">{{ item.name }}</h3>
-                <span class="text-indigo-600 font-semibold">{{ site_settings.currency_symbol }}{{ item.price }}</span>
+                <span class="text-indigo-600 font-semibold">${{ item.price }}</span>
             </div>
         </a>
         {% endfor %}

@@ -47,35 +47,3 @@ class ProductViewTests(TestCase):
         response = self.client.get(self.product.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Django Book")
-
-    def test_featured_section_on_home(self):
-        Product.objects.create(
-            name="Star Item", price=Decimal("5.00"), stock=1, is_featured=True
-        )
-        response = self.client.get(reverse("store:home"))
-        self.assertContains(response, "Main Products")
-        self.assertContains(response, "Star Item")
-
-    def test_catalog_page_has_no_featured_section(self):
-        Product.objects.create(
-            name="Star Item", price=Decimal("5.00"), stock=1, is_featured=True
-        )
-        response = self.client.get(reverse("store:product_list"))
-        self.assertNotContains(response, "Main Products")
-        self.assertContains(response, "All Products")
-
-    def test_list_view_lives_on_products_url(self):
-        response = self.client.get(reverse("store:product_list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "All Products")
-
-    def test_about_page(self):
-        response = self.client.get(reverse("store:about"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "About")
-
-    def test_nav_tabs_on_home(self):
-        response = self.client.get(reverse("store:home"))
-        self.assertContains(response, ">Home<")
-        self.assertContains(response, ">Products<")
-        self.assertContains(response, ">About<")

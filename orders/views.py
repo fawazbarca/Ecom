@@ -32,9 +32,6 @@ def checkout(request):
         form = CheckoutForm(request.POST)
         if form.is_valid():
             order = Order(**form.cleaned_data)
-            if request.user.is_authenticated:
-                order.user = request.user
-            order.shipping_fee = cart.get_shipping_fee()
             order.save()
 
             for item in cart:
@@ -50,30 +47,14 @@ def checkout(request):
                 product.save(update_fields=["stock"])
 
             order.recalculate_total()
-            order.save(update_fields=["subtotal", "shipping_fee", "total"])
+            order.save(update_fields=["total"])
             simulate_payment(order)
             cart.clear()
             return redirect("orders:order_confirmation", order_id=order.id)
     else:
-        form = CheckoutForm(initial=_profile_initial(request))
+        form = CheckoutForm()
 
     return render(request, "orders/checkout.html", {"cart": cart, "form": form})
-
-
-def _profile_initial(request):
-    """Prefill checkout fields from the logged-in user's profile."""
-    if not request.user.is_authenticated:
-        return {}
-    profile = getattr(request.user, "profile", None)
-    return {
-        "first_name": request.user.first_name,
-        "last_name": request.user.last_name,
-        "email": request.user.email,
-        "phone": profile.phone if profile else "",
-        "address": profile.address if profile else "",
-        "city": profile.city if profile else "",
-        "postal_code": profile.postal_code if profile else "",
-    }
 
 
 def order_confirmation(request, order_id):
