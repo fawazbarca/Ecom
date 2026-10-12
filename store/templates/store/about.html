@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">About {{ site_settings.store_name }}</h1>
+    <p class="text-gray-600 leading-relaxed">{{ site_settings.tagline }}</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+        <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+            <div class="text-3xl">&#128666;</div>
+            <h2 class="font-semibold text-gray-900 mt-2">Fast shipping</h2>
+            <p class="text-sm text-gray-500 mt-1">Free over {{ site_settings.currency_symbol }}{{ site_settings.free_shipping_threshold }}.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+            <div class="text-3xl">&#128176;</div>
+            <h2 class="font-semibold text-gray-900 mt-2">Fair prices</h2>
+            <p class="text-sm text-gray-500 mt-1">Quality products at honest prices.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+            <div class="text-3xl">&#128172;</div>
+            <h2 class="font-semibold text-gray-900 mt-2">Support</h2>
+            <p class="text-sm text-gray-500 mt-1">{{ site_settings.contact_email }}</p>
+        </div>
+    </div>
+
+    <div class="mt-10 text-center">
+        <a href="{% url 'store:product_list' %}" class="inline-block rounded-lg bg-indigo-600 px-8 py-3 text-white font-semibold hover:bg-indigo-700">Start shopping</a>
+    </div>
+</div>
+{% endblock %}

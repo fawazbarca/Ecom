@@ -1,0 +1,18 @@
+{% extends "admin/index.html" %}
+{% load admin_stats %}
+
+{% block content %}
+{% admin_stats as stats %}
+<div class="ecom-welcome">
+    <h2>{{ site_settings.store_name }} dashboard</h2>
+    <p>Manage your catalog, orders, and store configuration from one place.</p>
+    <div class="ecom-welcome-stats">
+        <div class="ecom-stat"><span>{{ stats.products }}</span><small>Products</small></div>
+        <div class="ecom-stat"><span>{{ stats.orders }}</span><small>Orders</small></div>
+        <div class="ecom-stat"><span>{{ stats.paid_orders }}</span><small>Paid</small></div>
+        <div class="ecom-stat"><span>{{ site_settings.currency_symbol }}{{ stats.revenue|floatformat:2 }}</span><small>Revenue</small></div>
+        <div class="ecom-stat"><span>{{ stats.users }}</span><small>Users</small></div>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}

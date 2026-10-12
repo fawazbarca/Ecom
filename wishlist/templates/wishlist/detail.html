@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Your Wishlist{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold text-gray-900 mb-6">Your Wishlist</h1>
+
+{% if wishlist|length %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for product in wishlist %}
+    <div class="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition flex flex-col">
+        <a href="{{ product.get_absolute_url }}" class="block">
+            <div class="aspect-square bg-gray-100 overflow-hidden">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-full w-full object-cover group-hover:scale-105 transition">
+                {% else %}
+                <div class="h-full w-full flex items-center justify-center text-gray-300 text-5xl">&#128230;</div>
+                {% endif %}
+            </div>
+        </a>
+        <div class="p-4 flex flex-col flex-1">
+            <a href="{{ product.get_absolute_url }}" class="font-semibold text-gray-900 truncate hover:text-indigo-600">{{ product.name }}</a>
+            <span class="text-lg font-bold text-gray-900 mt-1">{{ site_settings.currency_symbol }}{{ product.price }}</span>
+            <div class="mt-auto pt-3 flex items-center gap-2">
+                {% if product.in_stock %}
+                <form action="{% url 'cart:cart_add' product.id %}" method="post" class="flex-1">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="w-full rounded-lg bg-indigo-600 px-3 py-2 text-sm text-white hover:bg-indigo-700">Add to cart</button>
+                </form>
+                {% else %}
+                <span class="flex-1 text-center rounded-lg bg-gray-200 px-3 py-2 text-sm text-gray-500">Out of stock</span>
+                {% endif %}
+                <form action="{% url 'wishlist:wishlist_toggle' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" title="Remove from wishlist" class="rounded-lg border border-gray-300 p-2 text-red-500 hover:bg-red-50">&#10005;</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bg-white rounded-xl shadow-sm p-12 text-center">
+    <p class="text-lg text-gray-600">Your wishlist is empty.</p>
+    <a href="{% url 'store:product_list' %}" class="mt-4 inline-block rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-700">Browse products</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ site_settings.store_name }} · Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/custom.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+    <h1>
+        <a href="{% url 'admin:index' %}">
+            <span class="ecom-brand-dot"></span>{{ site_settings.store_name }}&nbsp;Admin
+        </a>
+    </h1>
+</div>
+{% endblock %}

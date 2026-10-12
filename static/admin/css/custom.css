@@ -1,0 +1,166 @@
+:root,
+html[data-theme="light"] {
+    --primary: #4f46e5;
+    --secondary: #4338ca;
+    --accent: #6366f1;
+    --primary-fg: #ffffff;
+    --header-bg: #4f46e5;
+    --header-color: #ffffff;
+    --header-link-color: #e0e7ff;
+    --breadcrumbs-bg: #4338ca;
+    --breadcrumbs-fg: #e0e7ff;
+    --breadcrumbs-link-fg: #ffffff;
+    --link-fg: #4f46e5;
+    --link-hover-color: #4338ca;
+    --link-selected-fg: #4338ca;
+    --selected-row: #eef2ff;
+    --button-bg: #4f46e5;
+    --button-hover-bg: #4338ca;
+    --default-button-bg: #4338ca;
+    --default-button-hover-bg: #3730a3;
+}
+
+html[data-theme="dark"] {
+    --primary: #6366f1;
+    --secondary: #4f46e5;
+    --accent: #818cf8;
+    --header-bg: #1e1b4b;
+    --header-color: #e0e7ff;
+    --breadcrumbs-bg: #312e81;
+    --link-fg: #a5b4fc;
+    --link-hover-color: #c7d2fe;
+    --selected-row: #312e81;
+}
+
+body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Branding */
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--header-color);
+}
+
+#branding .ecom-brand-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 9999px;
+    background: #a5b4fc;
+    box-shadow: 0 0 0 4px rgba(165, 180, 252, 0.25);
+    vertical-align: middle;
+}
+
+/* Modules / cards */
+.module {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    border-radius: 12px 12px 0 0;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Tables */
+#changelist table thead th {
+    border-bottom: 2px solid var(--primary);
+}
+
+#changelist .actions,
+#changelist .paginator {
+    border-radius: 10px;
+}
+
+/* Buttons */
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+a.button:hover {
+    transform: translateY(-1px);
+}
+
+/* Dashboard welcome banner */
+.ecom-welcome {
+    background: linear-gradient(120deg, #4f46e5, #6366f1 55%, #8b5cf6);
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 22px 26px;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.28);
+}
+
+.ecom-welcome h2 {
+    margin: 0 0 4px;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.ecom-welcome p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+}
+
+.ecom-welcome-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.ecom-stat {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 10px;
+    padding: 10px 16px;
+    min-width: 120px;
+}
+
+.ecom-stat span {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.ecom-stat small {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.65rem;
+    opacity: 0.85;
+}
+
+/* Login page */
+body.login {
+    background: radial-gradient(circle at 20% 20%, #4f46e5 0%, #312e81 45%, #1e1b4b 100%);
+}
+
+body.login #container {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+body.login #header {
+    background: transparent;
+}

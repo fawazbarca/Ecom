@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">My Profile</h1>
+    <a href="{% url 'accounts:order_list' %}" class="text-sm text-indigo-600 hover:underline">View all orders &rarr;</a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+        <form method="post" class="bg-white rounded-xl shadow-sm p-6 space-y-4">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {% for field in form %}
+                <div class="{% if field.name == 'address' %}sm:col-span-2{% endif %}">
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <p class="text-sm text-red-500 mt-1">{{ field.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="rounded-lg bg-indigo-600 px-6 py-3 text-white font-semibold hover:bg-indigo-700">Save changes</button>
+        </form>
+    </div>
+
+    <aside class="bg-white rounded-xl shadow-sm p-6 h-fit">
+        <h2 class="font-semibold text-gray-900 mb-4">Recent orders</h2>
+        {% if orders %}
+        <ul class="divide-y divide-gray-100 text-sm">
+            {% for order in orders %}
+            <li class="py-3 flex items-center justify-between">
+                <div>
+                    <a href="{% url 'orders:order_confirmation' order.id %}" class="font-medium text-gray-900 hover:text-indigo-600">Order #{{ order.id }}</a>
+                    <div class="text-xs text-gray-400">{{ order.created_at|date:"M d, Y" }}</div>
+                </div>
+                <span class="font-semibold">{{ site_settings.currency_symbol }}{{ order.total }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-sm text-gray-500">No orders yet.</p>
+        {% endif %}
+    </aside>
+</div>
+{% endblock %}
