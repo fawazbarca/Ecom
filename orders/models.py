@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.conf import settings
 from django.db import models
 
 from store.models import Product
@@ -13,6 +14,13 @@ class Order(models.Model):
         ("cancelled", "Cancelled"),
     ]
 
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="orders",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     first_name = models.CharField(max_length=80)
     last_name = models.CharField(max_length=80)
     email = models.EmailField()
@@ -23,6 +31,8 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     paid = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=64, blank=True)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
+    shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -33,7 +43,8 @@ class Order(models.Model):
         return f"Order #{self.pk} - {self.email}"
 
     def recalculate_total(self):
-        self.total = sum((item.line_total for item in self.items.all()), Decimal("0.00"))
+        self.subtotal = sum((item.line_total for item in self.items.all()), Decimal("0.00"))
+        self.total = self.subtotal + self.shipping_fee
         return self.total
 
 

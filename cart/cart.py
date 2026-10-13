@@ -42,13 +42,18 @@ class Cart:
     def __iter__(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
-        cart = self.cart.copy()
-        for product in products:
-            cart[str(product.id)]["product"] = product
-        for item in cart.values():
-            item["price"] = Decimal(item["price"])
-            item["line_total"] = item["price"] * item["quantity"]
-            yield item
+        by_id = {str(product.id): product for product in products}
+        for product_id, stored in self.cart.items():
+            product = by_id.get(product_id)
+            if product is None:
+                continue
+            price = Decimal(stored["price"])
+            yield {
+                "product": product,
+                "quantity": stored["quantity"],
+                "price": price,
+                "line_total": price * stored["quantity"],
+            }
 
     def __len__(self):
         return sum(item["quantity"] for item in self.cart.values())
@@ -57,6 +62,21 @@ class Cart:
         return sum(
             Decimal(item["price"]) * item["quantity"] for item in self.cart.values()
         )
+
+    def get_shipping_fee(self):
+        from core.models import SiteSettings
+
+        settings = SiteSettings.load()
+        subtotal = self.get_total_price()
+        if not len(self):
+            return Decimal("0.00")
+        threshold = settings.free_shipping_threshold
+        if threshold and subtotal >= threshold:
+            return Decimal("0.00")
+        return settings.shipping_fee
+
+    def get_grand_total(self):
+        return self.get_total_price() + self.get_shipping_fee()
 
     def get_item(self, product):
         return self.cart.get(str(product.id))

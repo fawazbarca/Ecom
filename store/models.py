@@ -34,6 +34,7 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False, help_text="Show in the Main Products section.")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

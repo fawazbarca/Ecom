@@ -4,23 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Shop{% endblock %} | Ecom</title>
+    <title>{% block title %}Shop{% endblock %} | {{ site_settings.store_name }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-gray-50 text-gray-800">
     <header class="bg-white shadow-sm sticky top-0 z-10">
         <nav class="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
-            <a href="{% url 'store:product_list' %}" class="text-2xl font-bold text-indigo-600">Ecom</a>
+            <div class="flex items-center gap-6">
+                <a href="{% url 'store:home' %}" class="text-2xl font-bold text-indigo-600">{{ site_settings.store_name }}</a>
+                <div class="hidden md:flex items-center gap-1">
+                    <a href="{% url 'store:home' %}"
+                       class="px-4 py-2 rounded-lg text-sm font-medium transition {% if request.resolver_match.url_name == 'home' %}bg-indigo-600 text-white{% else %}text-gray-700 hover:bg-gray-100{% endif %}">Home</a>
+                    <a href="{% url 'store:product_list' %}"
+                       class="px-4 py-2 rounded-lg text-sm font-medium transition {% if request.resolver_match.url_name == 'product_list' or request.resolver_match.url_name == 'product_detail' %}bg-indigo-600 text-white{% else %}text-gray-700 hover:bg-gray-100{% endif %}">Products</a>
+                    <a href="{% url 'store:about' %}"
+                       class="px-4 py-2 rounded-lg text-sm font-medium transition {% if request.resolver_match.url_name == 'about' %}bg-indigo-600 text-white{% else %}text-gray-700 hover:bg-gray-100{% endif %}">About</a>
+                </div>
+            </div>
             <form action="{% url 'store:product_list' %}" method="get" class="hidden sm:block flex-1 mx-8">
                 <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search products..."
                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </form>
-            <a href="{% url 'cart:cart_detail' %}" class="relative inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
-                Cart
-                {% if cart|length %}
-                <span class="ml-2 inline-flex items-center justify-center rounded-full bg-white text-indigo-600 text-xs font-bold h-5 w-5">{{ cart|length }}</span>
+            <div class="flex items-center gap-2">
+                <a href="{% url 'wishlist:wishlist_detail' %}" class="relative inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    Wishlist
+                    {% if wishlist|length %}
+                    <span class="ml-2 inline-flex items-center justify-center rounded-full bg-indigo-600 text-white text-xs font-bold h-5 w-5">{{ wishlist|length }}</span>
+                    {% endif %}
+                </a>
+                <a href="{% url 'cart:cart_detail' %}" class="relative inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
+                    Cart
+                    {% if cart|length %}
+                    <span class="ml-2 inline-flex items-center justify-center rounded-full bg-white text-indigo-600 text-xs font-bold h-5 w-5">{{ cart|length }}</span>
+                    {% endif %}
+                </a>
+                {% if user.is_authenticated %}
+                <div class="relative group">
+                    <button class="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100">
+                        <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-sm font-bold">{{ user.username|first|upper }}</span>
+                        <span class="hidden sm:inline">{{ user.username }}</span>
+                    </button>
+                    <div class="absolute right-0 mt-1 hidden group-hover:block w-44 rounded-lg border bg-white shadow-lg py-1 text-sm z-20">
+                        <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My profile</a>
+                        <a href="{% url 'accounts:order_list' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My orders</a>
+                        <form action="{% url 'accounts:logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">Log out</button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100">Log in</a>
                 {% endif %}
-            </a>
+            </div>
         </nav>
     </header>
 
@@ -40,7 +76,8 @@
 
     <footer class="bg-white border-t mt-8">
         <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-500">
-            &copy; {% now "Y" %} Ecom. Demo store &mdash; payments are simulated.
+            &copy; {% now "Y" %} {{ site_settings.store_name }}. {{ site_settings.tagline }}
+            {% if site_settings.contact_email %} &middot; {{ site_settings.contact_email }}{% endif %}
         </div>
     </footer>
 </body>

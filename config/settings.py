@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core',
+    'accounts',
     'store',
     'cart',
+    'wishlist',
     'orders',
 ]
 
@@ -69,6 +72,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'cart.context_processors.cart',
+                'wishlist.context_processors.wishlist',
+                'core.context_processors.site_settings',
             ],
         },
     },
@@ -133,6 +138,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Session cart identifier
 CART_SESSION_ID = 'cart'
+
+# Session wishlist identifier
+WISHLIST_SESSION_ID = 'wishlist'
+
+# Authentication
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'accounts:profile'
+LOGOUT_REDIRECT_URL = 'store:product_list'
 
 
 # Email

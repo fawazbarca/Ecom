@@ -1,7 +1,19 @@
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 
 from .models import Category, Product
+
+
+def home(request):
+    featured = list(Product.objects.filter(is_active=True, is_featured=True)[:6])
+    if not featured:
+        featured = list(Product.objects.filter(is_active=True)[:6])
+    return render(request, "store/home.html", {"featured": featured})
+
+
+def about(request):
+    return render(request, "store/about.html")
 
 
 def product_list(request):
@@ -19,8 +31,12 @@ def product_list(request):
     if query:
         products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
 
+    paginator = Paginator(products, 36)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
     context = {
-        "products": products,
+        "products": page_obj,
+        "page_obj": page_obj,
         "categories": categories,
         "current_category": current_category,
         "query": query,
